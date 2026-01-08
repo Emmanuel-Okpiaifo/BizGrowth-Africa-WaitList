@@ -82,7 +82,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initialize intersection observer for .animate-on-scroll elements
     animateOnScroll();
     setupLogoSwitcher();
-    setupHeroPoster();
+    initHeroLiveBackground();
 });
 
 // Podcast notification popup functionality
@@ -218,7 +218,200 @@ window.addEventListener('scroll', () => {
     }
 }, { passive: true });
 
-// Hero canvas animation removed (video background in use)
+// Live hero background (canvas network pulses)
+function initHeroLiveBackground() {
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        return; // respect reduced motion
+    }
+    const canvas = document.getElementById('hero-live');
+    const container = document.querySelector('.hero-live-container');
+    if (!canvas || !container) return;
+    const ctx = canvas.getContext('2d');
+    let width = 0, height = 0, dpr = Math.min(window.devicePixelRatio || 1, 2);
+    let nodes = [];
+    let edges = [];
+    let pulses = [];
+    let rafId = 0;
+    let lastTs = 0;
+
+    function resize() {
+        const rect = container.getBoundingClientRect();
+        width = Math.max(1, Math.floor(rect.width));
+        height = Math.max(1, Math.floor(rect.height));
+        canvas.width = Math.floor(width * dpr);
+        canvas.height = Math.floor(height * dpr);
+        canvas.style.width = width + 'px';
+        canvas.style.height = height + 'px';
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        buildScene();
+    }
+
+    function randomInRange(min, max) { return Math.random() * (max - min) + min; }
+
+    function buildScene() {
+        const area = width * height;
+        const targetNodes = Math.max(28, Math.min(80, Math.floor(area / 30000)));
+        nodes = [];
+        edges = [];
+        pulses = [];
+        // Seed nodes in a banded distribution to imply flows
+        for (let i = 0; i < targetNodes; i++) {
+            const nx = Math.random();
+            const ny = Math.pow(Math.random(), 0.9); // slightly denser near top
+            nodes.push({
+                x: nx * width,
+                y: ny * height,
+                vx: randomInRange(-0.02, 0.02),
+                vy: randomInRange(-0.02, 0.02),
+                strength: randomInRange(0.6, 1)
+            });
+        }
+        // Connect k nearest neighbors
+        const k = 3;
+        for (let i = 0; i < nodes.length; i++) {
+            const a = nodes[i];
+            const dists = [];
+            for (let j = 0; j < nodes.length; j++) {
+                if (i === j) continue;
+                const b = nodes[j];
+                const dx = a.x - b.x;
+                const dy = a.y - b.y;
+                dists.push({ j, d2: dx*dx + dy*dy });
+            }
+            dists.sort((p,q) => p.d2 - q.d2);
+            for (let n = 0; n < k; n++) {
+                const j = dists[n].j;
+                const key = i < j ? `${i}-${j}` : `${j}-${i}`;
+                if (!edges.some(e => e.key === key)) {
+                    edges.push({ a: i, b: j, key });
+                }
+            }
+        }
+        // Create pulses traversing edges
+        const pulseCount = Math.max(8, Math.floor(edges.length * 0.35));
+        for (let p = 0; p < pulseCount; p++) {
+            const eIndex = Math.floor(Math.random() * edges.length);
+            pulses.push({
+                eIndex,
+                t: Math.random(),
+                speed: randomInRange(0.12, 0.45), // units per second
+                size: randomInRange(2.2, 3.8),
+                hue: Math.random() < 0.5 ? 155 : 45 // greenish or amber for "signals"
+            });
+        }
+    }
+
+    function step(dt) {
+        // Gentle drift
+        for (const n of nodes) {
+            n.x += n.vx * dt;
+            n.y += n.vy * dt;
+            // bounce softly at edges
+            if (n.x < 0) { n.x = 0; n.vx *= -1; }
+            if (n.x > width) { n.x = width; n.vx *= -1; }
+            if (n.y < 0) { n.y = 0; n.vy *= -1; }
+            if (n.y > height) { n.y = height; n.vy *= -1; }
+        }
+        for (const pulse of pulses) {
+            pulse.t += pulse.speed * dt / 1000;
+            if (pulse.t > 1) {
+                pulse.t = 0;
+                pulse.eIndex = Math.floor(Math.random() * edges.length);
+                pulse.speed = randomInRange(0.12, 0.45);
+                pulse.size = randomInRange(2.2, 3.8);
+            }
+        }
+    }
+
+    function drawBackground() {
+        // subtle gradient
+        const g = ctx.createLinearGradient(0, 0, width, height);
+        g.addColorStop(0, 'rgba(0,0,0,0.9)');
+        g.addColorStop(1, 'rgba(0,0,0,0.7)');
+        ctx.fillStyle = g;
+        ctx.fillRect(0, 0, width, height);
+        // grid
+        ctx.strokeStyle = 'rgba(255,255,255,0.04)';
+        ctx.lineWidth = 1;
+        const spacing = 48;
+        ctx.beginPath();
+        for (let x = 0.5; x < width; x += spacing) {
+            ctx.moveTo(x, 0);
+            ctx.lineTo(x, height);
+        }
+        for (let y = 0.5; y < height; y += spacing) {
+            ctx.moveTo(0, y);
+            ctx.lineTo(width, y);
+        }
+        ctx.stroke();
+    }
+
+    function drawNetwork() {
+        // connections
+        ctx.lineWidth = 1.2;
+        for (const e of edges) {
+            const a = nodes[e.a], b = nodes[e.b];
+            const dx = a.x - b.x, dy = a.y - b.y;
+            const dist = Math.hypot(dx, dy);
+            const alpha = Math.max(0, 0.14 - (dist / 600) * 0.14);
+            if (alpha <= 0.01) continue;
+            ctx.strokeStyle = `rgba(255,255,255,${alpha})`;
+            ctx.beginPath();
+            ctx.moveTo(a.x, a.y);
+            ctx.lineTo(b.x, b.y);
+            ctx.stroke();
+        }
+        // nodes
+        for (const n of nodes) {
+            ctx.fillStyle = 'rgba(255,255,255,0.22)';
+            ctx.beginPath();
+            ctx.arc(n.x, n.y, 2.0 + n.strength * 0.6, 0, Math.PI * 2);
+            ctx.fill();
+        }
+        // pulses
+        for (const pulse of pulses) {
+            const e = edges[pulse.eIndex];
+            const a = nodes[e.a], b = nodes[e.b];
+            const x = a.x + (b.x - a.x) * pulse.t;
+            const y = a.y + (b.y - a.y) * pulse.t;
+            const grd = ctx.createRadialGradient(x, y, 0, x, y, pulse.size * 4);
+            grd.addColorStop(0, `hsla(${pulse.hue}, 80%, 60%, 0.9)`);
+            grd.addColorStop(1, 'rgba(0,0,0,0)');
+            ctx.fillStyle = grd;
+            ctx.beginPath();
+            ctx.arc(x, y, pulse.size * 2.2, 0, Math.PI * 2);
+            ctx.fill();
+        }
+    }
+
+    function frame(ts) {
+        const dt = lastTs ? (ts - lastTs) : 16;
+        lastTs = ts;
+        ctx.clearRect(0, 0, width, height);
+        drawBackground();
+        step(dt);
+        drawNetwork();
+        rafId = requestAnimationFrame(frame);
+    }
+
+    function start() {
+        cancelAnimationFrame(rafId);
+        lastTs = 0;
+        rafId = requestAnimationFrame(frame);
+    }
+
+    resize();
+    start();
+
+    // Rebuild on resize
+    let rTimer;
+    window.addEventListener('resize', () => {
+        clearTimeout(rTimer);
+        rTimer = setTimeout(() => {
+            resize();
+        }, 120);
+    });
+}
 
 // Logo switching shared setup
 function setupLogoSwitcher() {
@@ -237,39 +430,4 @@ function setupLogoSwitcher() {
     window.addEventListener('scroll', apply, { passive: true });
 }
 
-// Generate and persist hero video poster as JPEG
-function setupHeroPoster() {
-    const video = document.querySelector('.hero-video');
-    if (!video) return;
-    // Use cached poster if available
-    try {
-        const cached = localStorage.getItem('bga_hero_poster');
-        if (cached) {
-            video.setAttribute('poster', cached);
-        }
-    } catch (e) {}
-    const capture = () => {
-        try {
-            const width = video.videoWidth;
-            const height = video.videoHeight;
-            if (!width || !height) return;
-            const canvas = document.createElement('canvas');
-            canvas.width = width;
-            canvas.height = height;
-            const ctx = canvas.getContext('2d');
-            ctx.drawImage(video, 0, 0, width, height);
-            const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
-            if (dataUrl) {
-                video.setAttribute('poster', dataUrl);
-                try { localStorage.setItem('bga_hero_poster', dataUrl); } catch (e) {}
-            }
-        } catch (e) {
-            // noop
-        }
-    };
-    if (video.readyState >= 2) {
-        capture();
-    } else {
-        video.addEventListener('loadeddata', capture, { once: true });
-    }
-}
+// (video poster removed since we no longer use a video background)

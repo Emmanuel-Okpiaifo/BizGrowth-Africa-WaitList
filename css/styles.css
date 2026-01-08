@@ -3468,8 +3468,8 @@ header nav ul {
     display: block;
 }
 
-/* Hero Video Background */
-.hero-video-container {
+/* Hero Live Background */
+.hero-live-container {
     position: absolute;
     top: 60px;
     left: 0;
@@ -3478,10 +3478,8 @@ header nav ul {
     z-index: 1;
     pointer-events: none;
 }
-.hero-video {
+#hero-live {
     width: 100%;
     height: 100%;
-    object-fit: cover;
     display: block;
-    filter: saturate(1.05) contrast(1.05);
 }
