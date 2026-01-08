@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="CareerTrack - Professional growth programs, coaching, and resources">
-    <title>Home - CareerTrack</title>
+    <meta name="description" content="BizGrowth Africa — tools, playbooks, and programs for African entrepreneurs. Join the waitlist for early access.">
+    <title>BizGrowth Africa — Waitlist</title>
     
     <!-- Preload critical assets -->
     <link rel="preload" href="css/styles.css" as="style">
@@ -16,10 +16,10 @@
     <!-- Optimize font loading -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
     
     <!-- Add favicon -->
-    <link rel="icon" type="image/svg+xml" href="./img/logos/ct-mark.svg">
+    <link rel="icon" type="image/svg+xml" href="./img/bizgrowth-favicon.svg">
     
     <!-- Optimize script loading for animations -->
     <script>
@@ -45,8 +45,9 @@
     <script src="js/main.js" defer></script>
     <style>
         .logo-img {
-            width: 180px; /* Increased size */
-            height: auto;
+            height: 40px;
+            width: auto;
+            display: block;
         }
     </style>
 </head>
@@ -55,7 +56,7 @@
     <header>
         <nav>
             <a href="index.html" class="logo">
-                <img src="./img/logos/careertrack-logo-dark.svg" alt="CareerTrack Logo" class="logo-img" data-logo-dark="./img/logos/careertrack-logo-dark.svg" data-logo-light="./img/logos/careertrack-logo-light.svg">
+                <img src="./img/bizgrowth-logo-africa-dark.svg" alt="BizGrowth Africa" class="logo-img" data-logo-dark="./img/bizgrowth-logo-africa-dark.svg" data-logo-light="./img/bizgrowth-logo-africa-light.svg">
             </a>
             <div class="nav-toggle" aria-label="Toggle navigation">
                 <span></span>
@@ -64,134 +65,104 @@
             </div>
             <ul>
                 <li><a href="index.html">Home</a></li>
-                <li><a href="about.html">About</a></li>
-                <li><a href="programs.html">Programs</a></li>
-                <li><a href="podcast.html">Podcast</a></li>
+                <li><a href="#waitlist">Waitlist</a></li>
             </ul>
         </nav>
     </header>
     <main>
         <section id="hero">
-            <div class="hero-canvas-container">
-                <canvas id="hero-canvas" aria-hidden="true"></canvas>
+            <div class="hero-video-container">
+                <video class="hero-video" autoplay muted loop playsinline preload="auto" poster="img/hero-poster.svg" aria-hidden="true">
+                    <source src="img/6931246-uhd_2160_3840_25fps.mp4" type="video/mp4">
+                </video>
                 <div class="hero-overlay"></div>
             </div>
             <div class="hero-content">
-                <h1 class="animate-on-scroll"></h1>
-                <h2 class="animate-on-scroll">Advance your career with CareerTrack.</h2>
-                <p class="animate-on-scroll">CareerTrack provides structured programs, practical coaching, and guided tools to help you move forward with clarity and confidence.
-                    <br>
-                    Your professional journey starts here.
-                </p>
-                <a href="programs.html" class="animate-on-scroll"><button class="cta-button">Start Your Career Journey</button></a>
-            </div>
-        </section>
-
-        <section id="impact-stats">
-            <div class="stat-container">
-                <div class="stat-item">
-                    <span class="stat-number">Transform</span>
-                    <span class="stat-label">Your Mindset</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-number">Elevate</span>
-                    <span class="stat-label">Your Potential</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-number">Achieve</span>
-                    <span class="stat-label">Your Goals</span>
+                <div class="hero-kicker animate-on-scroll">Business Journalism + Procurement Intelligence + Enablement</div>
+                <h1 class="hero-title animate-on-scroll">BizGrowth Africa</h1>
+                <p class="hero-subtitle animate-on-scroll">Tenders • Grants • News — one platform for entrepreneurs and SMEs.</p>
+                <div class="hero-cta-group animate-on-scroll">
+                    <a href="#waitlist"><button class="cta-button">Join the Waitlist</button></a>
                 </div>
             </div>
         </section>
 
-        <section id="featured-programs">
-            <h2 class="animate-on-scroll">Build your path with our signature career programs</h2>
-            <div class="programs-grid">
-                <div class="program-card animate-on-scroll">
-                    <div class="program-image">
-                        <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
-                             alt="Growth Accelerator"
-                             loading="lazy"
-                             width="800"
-                             height="600">
-                    </div>
-                    <div class="program-content">
-                        <h3>Career Foundations Accelerator</h3>
-                        <p>A structured 3-week track to develop core skills, align goals, and build momentum in your career.</p>
-                        <a href="#waitlist" class="program-cta">Learn More</a>
-                    </div>
-                </div>
-                <div class="program-card animate-on-scroll">
-                    <div class="program-image">
-                        <img src="https://images.unsplash.com/photo-1554224155-6726b3ff858f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
-                             alt="Money Accelerator"
-                             loading="lazy"
-                             width="800"
-                             height="600">
-                    </div>
-                    <div class="program-content">
-                        <h3>Professional Skills Sprint</h3>
-                        <p>A focused 2-week sprint to upgrade your resume, interviewing, and communication skills.</p>
-                        <a href="#waitlist" class="program-cta">Learn More</a>
-                    </div>
-                </div>
-                <div class="program-card animate-on-scroll">
-                    <div class="program-image">
-                        <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
-                             alt="Knowledge Accelerator"
-                             loading="lazy"
-                             width="800"
-                             height="600">
-                    </div>
-                    <div class="program-content">
-                        <h3>Knowledge to Impact</h3>
-                        <p>Learn how to package your expertise into workshops, coaching, or products with clear outcomes.</p>
-                        <a href="#waitlist" class="program-cta">Learn More</a>
-                    </div>
-                </div>
-                <div class="program-card animate-on-scroll">
-                    <div class="program-image">
-                        <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
-                             alt="Entrepreneurs Bootcamp"
-                             loading="lazy"
-                             width="800"
-                             height="600">
-                    </div>
-                    <div class="program-content">
-                        <h3>Career Leadership Bootcamp</h3>
-                        <p>An intensive experience designed to strengthen leadership, execution, and career advancement strategies.</p>
-                        <a href="#waitlist" class="program-cta">Learn More</a>
-                    </div>
-                </div>
-            </div>
-        </section>
+        <!-- Live Markets removed per request -->
 
-        <section id="testimonials">
-            <div class="testimonial-slider">
-                <div class="testimonial-slide">
-                    <div class="testimonial-content">
-                        <p class="quote">"CareerTrack gave me clarity, tools, and accountability. I advanced faster with less guesswork."</p>
-                        <div class="testimonial-author">
-                            <img src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80" 
-                                 alt="Sarah Johnson"
-                                 loading="lazy"
-                                 width="150"
-                                 height="150">
-                            <div class="author-info">
-                                <h4>Sarah Johnson</h4>
-                                <p>CEO, TechStart Inc.</p>
-                            </div>
+        <!-- Journey timeline using About page destination style -->
+        <section id="value-prop" aria-label="Why BizGrowth Africa">
+            <div class="story-content">
+                <h2 class="animate-on-scroll">BizGrowth Africa — What it is & What you’ll gain</h2>
+                <div class="story-timeline">
+                    <div class="timeline-item animate-on-scroll">
+                        <div class="timeline-marker">
+                            <span class="marker-dot"></span>
+                            <span class="marker-line"></span>
+                        </div>
+                        <div class="timeline-content">
+                            <h3>What is BizGrowth Africa?</h3>
+                            <p>A Pan‑African platform that combines business journalism, procurement intelligence, and entrepreneurship enablement—built for SMEs, startups, and operators.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item animate-on-scroll">
+                        <div class="timeline-marker">
+                            <span class="marker-dot"></span>
+                            <span class="marker-line"></span>
+                        </div>
+                        <div class="timeline-content">
+                            <h3>The core pillars</h3>
+                            <p>Tenders & procurement hub • Opportunities (grants & fellowships) • Business news & entrepreneurial insights.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item animate-on-scroll">
+                        <div class="timeline-marker">
+                            <span class="marker-dot"></span>
+                            <span class="marker-line"></span>
+                        </div>
+                        <div class="timeline-content">
+                            <h3>What you’ll gain: daily deal flow</h3>
+                            <p>Real‑time tender discovery across Africa, curated to your capabilities so you can find and focus on the right opportunities.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item animate-on-scroll">
+                        <div class="timeline-marker">
+                            <span class="marker-dot"></span>
+                            <span class="marker-line"></span>
+                        </div>
+                        <div class="timeline-content">
+                            <h3>What you’ll gain: alerts & shortlists</h3>
+                            <p>Save opportunities, get deadline reminders, and stay on top of new matches without manual searching.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item animate-on-scroll">
+                        <div class="timeline-marker">
+                            <span class="marker-dot"></span>
+                            <span class="marker-line"></span>
+                        </div>
+                        <div class="timeline-content">
+                            <h3>What you’ll gain: execution support</h3>
+                            <p>Templates, AI‑assistance, and trusted reporting so you can draft stronger submissions and make informed decisions—fast.</p>
                         </div>
                     </div>
                 </div>
+                <div class="story-conclusion animate-on-scroll">
+                    <p>Destination: consistent pipeline, better decisions, stronger execution—and a community to scale with.</p>
+                </div>
             </div>
         </section>
 
+        <!-- (removed) Coverage preview -->
+
         <section id="waitlist">
             <div class="waitlist-container">
-                <h2 class="animate-on-scroll">Join Our Waitlist</h2>
-                <p class="waitlist-subtitle animate-on-scroll">Get priority access to our next program launch and exclusive early-bird pricing.</p>
-                <form id="waitlist-form" class="animate-on-scroll">
+                <h2 class="animate-on-scroll">Become a Member</h2>
+                <p class="waitlist-subtitle animate-on-scroll">Join the BizGrowth Africa waitlist to unlock tenders, grants, and trusted business news at launch. Membership notices arrive first.</p>
+                <form id="waitlist-form" name="bga-waitlist" method="POST" data-netlify="true" netlify-honeypot="bot-field" action="/thank-you.html" class="animate-on-scroll">
+                    <input type="hidden" name="form-name" value="bga-waitlist">
+                    <input type="hidden" name="formType" value="membership">
+                    <div hidden>
+                        <input name="bot-field" />
+                    </div>
                     <div class="form-group">
                         <input type="text" id="firstName" name="firstName" placeholder="First Name" required>
                     </div>
@@ -208,54 +179,44 @@
                         <input type="text" id="country" name="country" placeholder="Country" required>
                     </div>
                     <div class="form-group">
-                        <select id="program" name="program" required>
-                            <option value="">Which program are you interested in?</option>
-                            <option value="growth">The Growth Accelerator</option>
-                            <option value="money">The Money Accelerator</option>
-                            <option value="knowledge">Monetize Your Knowledge Accelerator</option>
-                            <option value="bootcamp">Entrepreneurs Bootcamp & Retreat</option>
+                        <select id="interest" name="interest" required>
+                            <option value="">What are you most interested in?</option>
+                            <option value="tenders">Tenders & procurement</option>
+                            <option value="grants">Grants & fellowships</option>
+                            <option value="news">Business news & insights</option>
+                            <option value="all">All of the above</option>
                         </select>
                     </div>
-                    <button type="submit" class="submit-button">Join the Waitlist</button>
+                    <button type="submit" class="submit-button">Become a Member</button>
                 </form>
-                <p class="disclaimer animate-on-scroll">All our programs are high-impact, expert-led, and paid. Joining the waitlist gives you priority access, early pricing, and a chance to secure your spot before public enrollment opens.</p>
+                <p class="disclaimer animate-on-scroll">We respect your inbox. No spam—just relevant alerts and updates. Unsubscribe anytime.</p>
             </div>
         </section>
     </main>
     <footer>
-        <div class="footer-content">
-            <div class="footer-logo">
-                <a href="index.html">
-                    <img src="./img/logos/careertrack-logo-light.svg" alt="CareerTrack Logo" class="footer-logo-img">
-                </a>
-            </div>
-            <div class="footer-links">
-                <a href="about.html">About</a>
-                <a href="programs.html">Programs</a>
-                <a href="podcast.html">Podcast</a>
-                <a href="#contact">Contact</a>
-            </div>
-            <div class="contact-info">
-                <p>info@careertrack.com</p>
-                <p>+234-000-0000</p>
-                <p>123 Demo Street</p>
+        <div class="footer-newsletter">
+            <div class="footer-newsletter-inner">
+                <h3 class="footer-newsletter-title">Subscribe to the Newsletter</h3>
+                <p class="footer-newsletter-subtitle">Weekly tenders, grants, and business insights in your inbox.</p>
+                <form name="bga-newsletter" method="POST" data-netlify="true" netlify-honeypot="bot-field" action="/thank-you.html" class="footer-newsletter-form">
+                    <input type="hidden" name="form-name" value="bga-newsletter">
+                    <div hidden>
+                        <input name="bot-field" />
+                    </div>
+                    <div class="fn-group">
+                        <input type="text" name="name" placeholder="Your Name" required>
+                    </div>
+                    <div class="fn-group">
+                        <input type="email" name="email" placeholder="Email Address" required>
+                    </div>
+                    <button type="submit" class="footer-newsletter-button">Subscribe</button>
+                </form>
             </div>
         </div>
         <div class="footer-bottom">
-            <p>&copy; 2025 CareerTrack. All rights reserved.</p>
+            <p>&copy; 2026 BizGrowth Africa • info@bizgrowth.africa</p>
         </div>
     </footer>
-    <div class="guide-popup-overlay">
-        <div class="guide-popup-content">
-            <button class="guide-popup-close" aria-label="Close popup"></button>
-            <h2 class="guide-popup-title">Get Your CareerTrack Bonus Guide</h2>
-            <p class="guide-popup-message">Enter your email to download your free guide and accelerate your professional journey.</p>
-            <form class="guide-popup-form">
-                <input type="email" placeholder="Enter your email address" required>
-                <button type="submit">Get Free Guide</button>
-            </form>
-        </div>
-    </div>
     
     <!-- Add animation optimization script -->
 </body>

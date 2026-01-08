@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1920" height="1080" viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="BizGrowth Africa Poster">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0b0b0b"/>
+      <stop offset="1" stop-color="#1a1a1a"/>
+    </linearGradient>
+  </defs>
+  <rect width="1920" height="1080" fill="url(#g)"/>
+  <!-- Subtle vignette -->
+  <radialGradient id="v" cx="50%" cy="40%" r="70%">
+    <stop offset="0%" stop-color="rgba(0,0,0,0)"/>
+    <stop offset="100%" stop-color="rgba(0,0,0,0.45)"/>
+  </radialGradient>
+  <rect width="1920" height="1080" fill="url(#v)"/>
+  <!-- Wordmark -->
+  <text x="50%" y="48%" text-anchor="middle" font-family="Poppins, Arial, sans-serif" font-size="96" font-weight="800" fill="#ffffff" opacity="0.96" letter-spacing="2">BIZGROWTH</text>
+  <text x="50%" y="56%" text-anchor="middle" font-family="Poppins, Arial, sans-serif" font-size="28" font-weight="600" fill="#ffffff" opacity="0.85" letter-spacing="10">AFRICA</text>
+</svg>
