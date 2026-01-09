@@ -788,7 +788,7 @@ function setupSheetRelay() {
     // Waitlist form
     const wl = document.getElementById('waitlist-form');
     if (wl) {
-        wl.addEventListener('submit', async (e) => {
+        wl.addEventListener('submit', (e) => {
             e.preventDefault();
             const payload = {
                 form: 'waitlist',
@@ -804,27 +804,22 @@ function setupSheetRelay() {
                 userAgent: getUserAgentString(),
                 page: window.location.href
             };
-            try {
-                const result = await postJSON(SHEET_WEBHOOK_URL, payload);
-                if (result.ok) {
-                    wl.reset();
-                    showSubmitOverlay(
-                        'You’re on the membership list 🎉',
-                        'Thanks for joining BizGrowth Africa. We’ll notify you at launch and send key updates.',
-                        ''
-                    );
-                }
-            } catch (err) {
-                // Suppress error popup per request; log for debugging
-                console.warn('Waitlist submission failed:', err);
-            }
+            // Optimistic UI: show success immediately
+            showSubmitOverlay(
+                'You’re on the membership list 🎉',
+                'Thanks for joining BizGrowth Africa. We’ll notify you at launch and send key updates.',
+                ''
+            );
+            wl.reset();
+            // Fire-and-forget relay
+            postJSON(SHEET_WEBHOOK_URL, payload).catch(err => console.warn('Waitlist submission failed:', err));
         });
     }
 
     // Newsletter form
     const nl = document.querySelector('form[name="bga-newsletter"]');
     if (nl) {
-        nl.addEventListener('submit', async (e) => {
+        nl.addEventListener('submit', (e) => {
             e.preventDefault();
             const payload = {
                 form: 'newsletter',
@@ -836,20 +831,15 @@ function setupSheetRelay() {
                 userAgent: getUserAgentString(),
                 page: window.location.href
             };
-            try {
-                const result = await postJSON(SHEET_WEBHOOK_URL, payload);
-                if (result.ok) {
-                    nl.reset();
-                    showSubmitOverlay(
-                        'You’re subscribed ✅',
-                        'You’ll receive BizGrowth newsletter updates in your inbox.',
-                        ''
-                    );
-                }
-            } catch (err) {
-                // Suppress error popup per request; log for debugging
-                console.warn('Newsletter submission failed:', err);
-            }
+            // Optimistic UI: show success immediately
+            showSubmitOverlay(
+                'You’re subscribed ✅',
+                'You’ll receive BizGrowth newsletter updates in your inbox.',
+                ''
+            );
+            nl.reset();
+            // Fire-and-forget relay
+            postJSON(SHEET_WEBHOOK_URL, payload).catch(err => console.warn('Newsletter submission failed:', err));
         });
     }
 }
