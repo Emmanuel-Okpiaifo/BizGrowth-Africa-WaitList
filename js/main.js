@@ -756,7 +756,11 @@ function setupSheetRelay() {
             extra.innerHTML = '';
         }
         overlay.hidden = false;
-        overlay.classList.add('active');
+        // Delay show for 0.5s to create a smoother, premium feel
+        overlay.classList.remove('active');
+        setTimeout(() => {
+            overlay.classList.add('active');
+        }, 500);
         const close = () => {
             overlay.classList.remove('active');
             overlay.hidden = true;
