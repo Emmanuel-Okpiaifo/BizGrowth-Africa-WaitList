@@ -763,13 +763,13 @@ function setupSheetRelay() {
         let ok = false;
         try {
             data = await resp.json();
-            ok = resp.ok && (data && (data.success === true || data.ok === true));
+            ok = (resp.status >= 200 && resp.status < 400) && (data && (data.success === true || data.ok === true));
         } catch {
             try {
                 text = await resp.text();
-                ok = resp.ok && /"success"\s*:\s*true/i.test(text);
+                ok = (resp.status >= 200 && resp.status < 400) && (/"success"\s*:\s*true/i.test(text) || /"ok"\s*:\s*true/i.test(text));
             } catch {
-                ok = resp.ok; // fall back: treat 2xx as success
+                ok = (resp.type === 'opaque') || (resp.status >= 200 && resp.status < 400);
             }
         }
         return { ok, status: resp.status, data: data ?? text };

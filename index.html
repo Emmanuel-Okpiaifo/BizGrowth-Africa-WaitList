@@ -113,14 +113,10 @@
             <div class="waitlist-container">
                 <h2 class="animate-on-scroll">Become a Member</h2>
                 <p class="waitlist-subtitle animate-on-scroll">Join the BizGrowth Africa waitlist to unlock tenders, grants, and trusted business news at launch. Membership notices arrive first.</p>
-                <form id="waitlist-form" name="bga-waitlist" method="POST" data-netlify="true" netlify-honeypot="bot-field" action="/thank-you.html" class="animate-on-scroll">
-                    <input type="hidden" name="form-name" value="bga-waitlist">
+                <form id="waitlist-form" name="bga-waitlist" class="animate-on-scroll">
                     <input type="hidden" name="formType" value="membership">
                     <input type="hidden" name="userId" id="userId">
                     <input type="hidden" name="referrerId" id="referrerId">
-                    <div hidden>
-                        <input name="bot-field" />
-                    </div>
                     <div class="form-group">
                         <input type="text" id="firstName" name="firstName" placeholder="First Name" required>
                     </div>
@@ -225,11 +221,7 @@
             <div class="footer-newsletter-inner">
                 <h3 class="footer-newsletter-title">Subscribe to the Newsletter</h3>
                 <p class="footer-newsletter-subtitle">Weekly tenders, grants, and business insights in your inbox.</p>
-                <form name="bga-newsletter" method="POST" data-netlify="true" netlify-honeypot="bot-field" action="/thank-you.html" class="footer-newsletter-form">
-                    <input type="hidden" name="form-name" value="bga-newsletter">
-                    <div hidden>
-                        <input name="bot-field" />
-                    </div>
+                <form name="bga-newsletter" class="footer-newsletter-form">
                     <div class="fn-group">
                         <input type="text" name="name" placeholder="Your Name" required>
                     </div>
