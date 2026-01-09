@@ -723,6 +723,22 @@ function setupSheetRelay() {
     const SHEET_WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbw6IyBFIF0qLhH1qXctH58GBTPFj2wrqv9oZJqUGXGxJ7y5Ti0Gm8ubrXgNvh6I-LdiLA/exec';
     if (!SHEET_WEBHOOK_URL || SHEET_WEBHOOK_URL.includes('YOUR_DEPLOYMENT_ID')) return;
 
+    function getUserAgentString() {
+        try {
+            let ua = navigator.userAgent || '';
+            if (!ua && navigator.userAgentData) {
+                const brands = (navigator.userAgentData.brands || []).map(b => `${b.brand}/${b.version}`).join('; ');
+                ua = `${brands}; mobile=${navigator.userAgentData.mobile}`;
+            }
+            const lang = navigator.language || '';
+            let tz = '';
+            try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || ''; } catch {}
+            return [ua, lang, tz].filter(Boolean).join(' | ');
+        } catch {
+            return 'unknown';
+        }
+    }
+
     function showSubmitOverlay(title, message, extraHTML) {
         const overlay = document.getElementById('submit-overlay');
         const closeBtn = document.getElementById('submit-close');
@@ -791,7 +807,7 @@ function setupSheetRelay() {
                 email: (document.getElementById('email') || {}).value || '',
                 country: (document.getElementById('country') || {}).value || '',
                 interest: (document.getElementById('interest') || {}).value || '',
-                userAgent: navigator.userAgent || '',
+                userAgent: getUserAgentString(),
                 page: window.location.href
             };
             try {
@@ -833,7 +849,7 @@ function setupSheetRelay() {
                 referrerId: getReferrerId(),
                 name: (nl.querySelector('input[name="name"]') || {}).value || '',
                 email: (nl.querySelector('input[name="email"]') || {}).value || '',
-                userAgent: navigator.userAgent || '',
+                userAgent: getUserAgentString(),
                 page: window.location.href
             };
             try {
