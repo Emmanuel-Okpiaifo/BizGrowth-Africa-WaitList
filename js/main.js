@@ -774,21 +774,15 @@ function setupSheetRelay() {
             keepalive: true,
             mode: 'cors'
         });
+        // Treat any 2xx-3xx as success regardless of body shape to avoid false negatives
+        const ok = (resp.status >= 200 && resp.status < 400) || resp.type === 'opaque';
+        // Best-effort capture of response body for debugging (does not affect success)
         let data = null;
-        let text = '';
-        let ok = false;
-        try {
-            data = await resp.json();
-            ok = (resp.status >= 200 && resp.status < 400) && (data && (data.success === true || data.ok === true));
-        } catch {
-            try {
-                text = await resp.text();
-                ok = (resp.status >= 200 && resp.status < 400) && (/"success"\s*:\s*true/i.test(text) || /"ok"\s*:\s*true/i.test(text));
-            } catch {
-                ok = (resp.type === 'opaque') || (resp.status >= 200 && resp.status < 400);
-            }
+        try { data = await resp.clone().json(); }
+        catch {
+            try { data = await resp.text(); } catch { data = null; }
         }
-        return { ok, status: resp.status, data: data ?? text };
+        return { ok, status: resp.status, data };
     }
 
     // Waitlist form
