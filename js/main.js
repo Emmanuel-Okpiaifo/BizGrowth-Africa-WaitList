@@ -81,6 +81,9 @@ document.addEventListener('DOMContentLoaded', () => {
     setupReveal();
     // Initialize intersection observer for .animate-on-scroll elements
     animateOnScroll();
+    setupDeepLinkScroll();
+    setupReferralAttribution();
+    setupSheetRelay();
     setupLogoSwitcher();
     initHeroLiveBackground();
     setupDeliveryChip();
@@ -607,4 +610,245 @@ function setupLogoSwitcher() {
     window.addEventListener('scroll', apply, { passive: true });
 }
 
+// Allow anchorless deep links to newsletter
+function setupDeepLinkScroll() {
+    const go = () => {
+        const el = document.getElementById('newsletter');
+        if (!el) return;
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    };
+    try {
+        const url = new URL(window.location.href);
+        const path = url.pathname.replace(/\/+$/, '');
+        if (url.hash === '#newsletter' || url.searchParams.has('newsletter') || path === '/newsletter') {
+            // wait a tick to ensure layout is ready
+            setTimeout(go, 50);
+        }
+    } catch {
+        // no-op
+    }
+}
+
 // (video poster removed since we no longer use a video background)
+
+// -----------------------------
+// Referral: IDs and attribution
+// -----------------------------
+function generateUUIDv4() {
+    // RFC4122-ish UUID v4 (not cryptographically strong)
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        const r = Math.random() * 16 | 0;
+        const v = c === 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+    });
+}
+
+function getOrCreateUserId() {
+    const key = 'bga_user_id';
+    try {
+        let id = localStorage.getItem(key);
+        if (!id) {
+            id = generateUUIDv4();
+            localStorage.setItem(key, id);
+        }
+        return id;
+    } catch {
+        // Storage blocked — fallback to ephemeral id (resets per session)
+        if (!window.__bga_ephemeral_id) window.__bga_ephemeral_id = generateUUIDv4();
+        return window.__bga_ephemeral_id;
+    }
+}
+
+function getReferrerId() {
+    const key = 'bga_referrer_id';
+    try {
+        const url = new URL(window.location.href);
+        const fromUrl = url.searchParams.get('ref') || '';
+        if (fromUrl) {
+            localStorage.setItem(key, fromUrl);
+            return fromUrl;
+        }
+        const stored = localStorage.getItem(key) || '';
+        return stored;
+    } catch {
+        return '';
+    }
+}
+
+function setupReferralAttribution() {
+    const myId = getOrCreateUserId();
+    const refId = getReferrerId();
+    // Populate hidden fields on the waitlist form
+    const userIdInput = document.getElementById('userId');
+    const referrerIdInput = document.getElementById('referrerId');
+    if (userIdInput) userIdInput.value = myId;
+    if (referrerIdInput && refId) referrerIdInput.value = refId;
+    // Ensure values are present at submit time too
+    const form = document.getElementById('waitlist-form');
+    if (form) {
+        form.addEventListener('submit', () => {
+            if (userIdInput && !userIdInput.value) userIdInput.value = getOrCreateUserId();
+            if (referrerIdInput && !referrerIdInput.value) referrerIdInput.value = getReferrerId();
+        });
+    }
+}
+
+// Override referral copy to use the real user id
+(function enhanceReferralCopy() {
+    document.addEventListener('DOMContentLoaded', () => {
+        const btn = document.getElementById('referral-copy-btn');
+        const toast = document.getElementById('referral-toast');
+        if (!btn || !toast) return;
+        btn.addEventListener('click', async () => {
+            const u = new URL(window.location.href);
+            u.hash = ''; // no hash
+            u.searchParams.set('ref', getOrCreateUserId());
+            try {
+                await navigator.clipboard.writeText(u.toString());
+                toast.hidden = false;
+                toast.textContent = 'Link copied';
+                setTimeout(() => { toast.hidden = true; }, 2000);
+            } catch {
+                toast.hidden = false;
+                toast.textContent = u.toString();
+                setTimeout(() => { toast.hidden = true; }, 4000);
+            }
+        });
+    });
+})();
+
+// Relay submissions to Google Sheets via Apps Script without changing the form
+function setupSheetRelay() {
+    // Replace with your deployed Apps Script Web App URL
+    const SHEET_WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbw6IyBFIF0qLhH1qXctH58GBTPFj2wrqv9oZJqUGXGxJ7y5Ti0Gm8ubrXgNvh6I-LdiLA/exec';
+    if (!SHEET_WEBHOOK_URL || SHEET_WEBHOOK_URL.includes('YOUR_DEPLOYMENT_ID')) return;
+
+    function showSubmitOverlay(title, message, extraHTML) {
+        const overlay = document.getElementById('submit-overlay');
+        const closeBtn = document.getElementById('submit-close');
+        const t = document.getElementById('submit-title');
+        const m = document.getElementById('submit-message');
+        const extra = document.getElementById('submit-extra');
+        if (!overlay || !t || !m) return;
+        t.textContent = title || 'Success';
+        m.textContent = message || '';
+        if (extra && extraHTML) {
+            extra.hidden = false;
+            extra.innerHTML = extraHTML;
+        } else if (extra) {
+            extra.hidden = true;
+            extra.innerHTML = '';
+        }
+        overlay.hidden = false;
+        overlay.classList.add('active');
+        const close = () => {
+            overlay.classList.remove('active');
+            overlay.hidden = true;
+        };
+        closeBtn && closeBtn.addEventListener('click', close, { once: true });
+        overlay.addEventListener('click', (e) => { if (e.target === overlay) close(); }, { once: true });
+    }
+
+    async function postJSON(url, payload) {
+        const resp = await fetch(url, {
+            method: 'POST',
+            // Use a "simple" content-type to avoid CORS preflight (OPTIONS) with Apps Script
+            headers: { 'Content-Type': 'text/plain;charset=utf-8', 'Accept': 'application/json' },
+            body: JSON.stringify(payload), // still sending JSON string
+            keepalive: true,
+            mode: 'cors'
+        });
+        let data = null;
+        try { data = await resp.json(); } catch { data = null; }
+        const ok = resp.ok && data && (data.success === true || data.ok === true);
+        return { ok, status: resp.status, data };
+    }
+
+    // Waitlist form
+    const wl = document.getElementById('waitlist-form');
+    if (wl) {
+        wl.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const payload = {
+                form: 'waitlist',
+                ts: new Date().toISOString(),
+                userId: (document.getElementById('userId') || {}).value || getOrCreateUserId(),
+                referrerId: (document.getElementById('referrerId') || {}).value || getReferrerId(),
+                firstName: (document.getElementById('firstName') || {}).value || '',
+                lastName: (document.getElementById('lastName') || {}).value || '',
+                phone: (document.getElementById('phone') || {}).value || '',
+                email: (document.getElementById('email') || {}).value || '',
+                country: (document.getElementById('country') || {}).value || '',
+                interest: (document.getElementById('interest') || {}).value || '',
+                userAgent: navigator.userAgent || '',
+                page: window.location.href
+            };
+            try {
+                const result = await postJSON(SHEET_WEBHOOK_URL, payload);
+                if (result.ok) {
+                    wl.reset();
+                    showSubmitOverlay(
+                        'You’re on the membership list 🎉',
+                        'Thanks for joining BizGrowth Africa. We’ll notify you at launch and send key updates.',
+                        ''
+                    );
+                } else {
+                    const msg = (result.data && result.data.error) ? String(result.data.error) : `Request failed (${result.status})`;
+                    showSubmitOverlay(
+                        'Couldn’t complete signup',
+                        `Please try again in a moment. Details: ${msg}`,
+                        ''
+                    );
+                }
+            } catch (err) {
+                showSubmitOverlay(
+                    'Network error',
+                    'We could not reach the server. Check your connection and try again.',
+                    ''
+                );
+            }
+        });
+    }
+
+    // Newsletter form
+    const nl = document.querySelector('form[name="bga-newsletter"]');
+    if (nl) {
+        nl.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const payload = {
+                form: 'newsletter',
+                ts: new Date().toISOString(),
+                userId: getOrCreateUserId(),
+                referrerId: getReferrerId(),
+                name: (nl.querySelector('input[name="name"]') || {}).value || '',
+                email: (nl.querySelector('input[name="email"]') || {}).value || '',
+                userAgent: navigator.userAgent || '',
+                page: window.location.href
+            };
+            try {
+                const result = await postJSON(SHEET_WEBHOOK_URL, payload);
+                if (result.ok) {
+                    nl.reset();
+                    showSubmitOverlay(
+                        'You’re subscribed ✅',
+                        'You’ll receive BizGrowth newsletter updates in your inbox.',
+                        ''
+                    );
+                } else {
+                    const msg = (result.data && result.data.error) ? String(result.data.error) : `Request failed (${result.status})`;
+                    showSubmitOverlay(
+                        'Subscription failed',
+                        `Please try again in a moment. Details: ${msg}`,
+                        ''
+                    );
+                }
+            } catch (err) {
+                showSubmitOverlay(
+                    'Network error',
+                    'We could not reach the server. Check your connection and try again.',
+                    ''
+                );
+            }
+        });
+    }
+}
