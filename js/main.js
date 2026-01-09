@@ -759,9 +759,20 @@ function setupSheetRelay() {
             mode: 'cors'
         });
         let data = null;
-        try { data = await resp.json(); } catch { data = null; }
-        const ok = resp.ok && data && (data.success === true || data.ok === true);
-        return { ok, status: resp.status, data };
+        let text = '';
+        let ok = false;
+        try {
+            data = await resp.json();
+            ok = resp.ok && (data && (data.success === true || data.ok === true));
+        } catch {
+            try {
+                text = await resp.text();
+                ok = resp.ok && /"success"\s*:\s*true/i.test(text);
+            } catch {
+                ok = resp.ok; // fall back: treat 2xx as success
+            }
+        }
+        return { ok, status: resp.status, data: data ?? text };
     }
 
     // Waitlist form
