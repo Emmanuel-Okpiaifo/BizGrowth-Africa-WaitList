@@ -813,20 +813,10 @@ function setupSheetRelay() {
                         'Thanks for joining BizGrowth Africa. We’ll notify you at launch and send key updates.',
                         ''
                     );
-                } else {
-                    const msg = (result.data && result.data.error) ? String(result.data.error) : `Request failed (${result.status})`;
-                    showSubmitOverlay(
-                        'Couldn’t complete signup',
-                        `Please try again in a moment. Details: ${msg}`,
-                        ''
-                    );
                 }
             } catch (err) {
-                showSubmitOverlay(
-                    'Network error',
-                    'We could not reach the server. Check your connection and try again.',
-                    ''
-                );
+                // Suppress error popup per request; log for debugging
+                console.warn('Waitlist submission failed:', err);
             }
         });
     }
@@ -855,20 +845,10 @@ function setupSheetRelay() {
                         'You’ll receive BizGrowth newsletter updates in your inbox.',
                         ''
                     );
-                } else {
-                    const msg = (result.data && result.data.error) ? String(result.data.error) : `Request failed (${result.status})`;
-                    showSubmitOverlay(
-                        'Subscription failed',
-                        `Please try again in a moment. Details: ${msg}`,
-                        ''
-                    );
                 }
             } catch (err) {
-                showSubmitOverlay(
-                    'Network error',
-                    'We could not reach the server. Check your connection and try again.',
-                    ''
-                );
+                // Suppress error popup per request; log for debugging
+                console.warn('Newsletter submission failed:', err);
             }
         });
     }
