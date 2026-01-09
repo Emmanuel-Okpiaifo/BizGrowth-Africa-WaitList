@@ -863,13 +863,56 @@ html {
 .unlock-inline .unlock-confirm { padding: 8px 12px; border-radius: 999px; border: 1px solid #000; background: #000; color: #fff; cursor: pointer; }
 .lock-mask { position: absolute; inset: 0; backdrop-filter: blur(2px); background: linear-gradient(180deg, rgba(255,255,255,0.35), rgba(255,255,255,0.6)); pointer-events: none; }
 .edition-item.unlocked .lock-mask { display: none; }
+/* Today’s Briefing — responsive refinements */
+@media (max-width: 900px) {
+    .edition-wrap { padding: 0 16px; }
+}
+@media (max-width: 700px) {
+    .edition-header { flex-direction: column; align-items: center; text-align: center; gap: 10px; }
+    .briefing-filters { justify-content: center; }
+}
+@media (max-width: 520px) {
+    .edition-item { padding: 14px 12px; }
+    .edition-item .headline, .edition-item .deck { overflow-wrap: anywhere; word-break: break-word; }
+    .unlock-inline { flex-wrap: wrap; }
+    .unlock-inline input { flex: 1 1 100%; min-width: 0; }
+    .unlock-inline .unlock-confirm { width: 100%; }
+}
+@media (max-width: 400px) {
+    .brief-chip { font-size: 0.8rem; padding: 6px 10px; }
+}
 
 /* What we cover */
 #coverage-compact { padding: 60px 0; background: #fff; }
 .coverage-compact-wrap { max-width: 800px; margin: 0 auto; padding: 0 20px; text-align: center; }
-.coverage-bullets { display: inline-grid; grid-template-columns: repeat(3, auto); gap: 10px 18px; padding: 0; margin: 0; list-style: none; }
-.coverage-bullets li { padding: 8px 12px; border: 1px solid #eee; border-radius: 999px; background: #f8f9fa; font-weight: 500; }
-@media (max-width: 600px) { .coverage-bullets { grid-template-columns: repeat(2, auto); } }
+.coverage-bullets {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px 16px;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    justify-items: center;
+}
+.coverage-bullets li {
+    padding: 10px 14px;
+    border: 1px solid #eee;
+    border-radius: 999px;
+    background: #f8f9fa;
+    font-weight: 500;
+    width: 100%;
+    box-sizing: border-box;
+    text-align: center;
+}
+/* Force two-line labels for select short pills on wide screens */
+@media (min-width: 992px) {
+    .coverage-bullets li.force-two .line-break { display: block; }
+}
+@media (max-width: 420px) {
+    .coverage-compact-wrap { padding: 0 16px; }
+    .coverage-bullets { grid-template-columns: 1fr; gap: 10px; }
+    .coverage-bullets li { padding: 10px 12px; }
+}
 
 /* First 7 Days removed */
 
