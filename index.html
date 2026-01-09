@@ -79,13 +79,14 @@
                 <div class="hero-kicker animate-on-scroll">Business Journalism + Procurement Intelligence + Enablement</div>
                 <h1 class="hero-title animate-on-scroll">BizGrowth Africa</h1>
                 <p class="hero-subtitle animate-on-scroll">Tenders • Grants • News — one platform for entrepreneurs and SMEs.</p>
+                <div class="hero-meta animate-on-scroll" id="hero-delivery-chip" aria-live="polite">Delivered daily at 7:00am • Local time</div>
                 <div class="hero-cta-group animate-on-scroll">
                     <a href="#waitlist"><button class="cta-button">Join the Waitlist</button></a>
                 </div>
             </div>
         </section>
 
-        <!-- Live Markets removed per request -->
+        <!-- Signals strip removed -->
 
         <!-- Journey timeline using About page destination style -->
         <section id="value-prop" aria-label="Why BizGrowth Africa">
@@ -149,7 +150,79 @@
             </div>
         </section>
 
-        <!-- (removed) Coverage preview -->
+        <!-- Today’s Briefing (locked preview) -->
+        <section id="edition-preview" aria-label="Today’s Briefing">
+            <div class="edition-wrap">
+                <div class="edition-header">
+                    <h2 class="section-kicker">Today’s Briefing</h2>
+                    <div class="briefing-filters" id="briefing-filters" role="group" aria-label="Filter preview">
+                        <button class="brief-chip is-active" data-filter="all">All</button>
+                        <button class="brief-chip" data-filter="sector:Energy">Energy</button>
+                        <button class="brief-chip" data-filter="country:Kenya">Kenya</button>
+                        <button class="brief-chip" data-filter="size:SME">SME</button>
+                    </div>
+                </div>
+                <ul class="edition-list">
+                    <li class="edition-item" data-sector="Energy" data-country="Kenya" data-size="SME">
+                        <h3 class="headline">Kenya Power posts multi-year AMI rollout across 8 counties</h3>
+                        <p class="deck">Scope: installation, backhaul, SLAs. SMEs allowed via consortiums.</p>
+                        <button class="unlock-btn" data-uid="e1">Unlock one sample</button>
+                        <div class="lock-mask"></div>
+                        <div class="unlock-inline" data-for="e1" hidden>
+                            <input type="email" class="unlock-email" placeholder="Enter email to unlock one sample">
+                            <button class="unlock-confirm">Unlock</button>
+                        </div>
+                    </li>
+                    <li class="edition-item" data-sector="Logistics" data-country="Ghana" data-size="Mid">
+                        <h3 class="headline">AfDB seeks corridor O&M partners in West Africa (EOI)</h3>
+                        <p class="deck">Framework spans 24 months; scoring favors JV execution track.</p>
+                        <button class="unlock-btn" data-uid="e2">Unlock one sample</button>
+                        <div class="lock-mask"></div>
+                        <div class="unlock-inline" data-for="e2" hidden>
+                            <input type="email" class="unlock-email" placeholder="Enter email to unlock one sample">
+                            <button class="unlock-confirm">Unlock</button>
+                        </div>
+                    </li>
+                    <li class="edition-item" data-sector="Tourism" data-country="Rwanda" data-size="SME">
+                        <h3 class="headline">Tourism recovery grant reopens for SME operators</h3>
+                        <p class="deck">Matching up to $50k; emphasis on digital experience and export.</p>
+                        <button class="unlock-btn" data-uid="e3">Unlock one sample</button>
+                        <div class="lock-mask"></div>
+                        <div class="unlock-inline" data-for="e3" hidden>
+                            <input type="email" class="unlock-email" placeholder="Enter email to unlock one sample">
+                            <button class="unlock-confirm">Unlock</button>
+                        </div>
+                    </li>
+                    <li class="edition-item" data-sector="ICT" data-country="Nigeria" data-size="SME">
+                        <h3 class="headline">Nigeria sandbox expands; SME payment corridors prioritized</h3>
+                        <p class="deck">Pilot windows and incentives refreshed; clear pathway for operators.</p>
+                        <button class="unlock-btn" data-uid="e4">Unlock one sample</button>
+                        <div class="lock-mask"></div>
+                        <div class="unlock-inline" data-for="e4" hidden>
+                            <input type="email" class="unlock-email" placeholder="Enter email to unlock one sample">
+                            <button class="unlock-confirm">Unlock</button>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- What we cover (editorial stack) -->
+        <section id="coverage-compact" aria-label="What we cover">
+            <div class="coverage-compact-wrap">
+                <h2 class="section-kicker">What we cover</h2>
+                <ul class="coverage-bullets">
+                    <li>Deals & RFPs</li>
+                    <li>Grants & fellowships</li>
+                    <li>Policy & regulation</li>
+                    <li>Ecosystem funding</li>
+                    <li>Trade & FX</li>
+                    <li>Operator playbooks</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- First 7 Days and Source credibility removed -->
 
         <section id="waitlist">
             <div class="waitlist-container">
@@ -188,9 +261,17 @@
                     <button type="submit" class="submit-button">Become a Member</button>
                 </form>
                 <p class="disclaimer animate-on-scroll">We respect your inbox. No spam—just relevant alerts and updates. Unsubscribe anytime.</p>
+                <div class="referral-card animate-on-scroll">
+                    <div class="referral-title">Skip the line</div>
+                    <p class="referral-copy">Move up 50 spots for each friend who joins from your link.</p>
+                    <button class="referral-copy-btn" id="referral-copy-btn" type="button">Copy your invite link</button>
+                    <div class="referral-toast" id="referral-toast" role="status" aria-live="polite" hidden>Link copied</div>
+                </div>
             </div>
         </section>
     </main>
+    <!-- Countdown ribbon -->
+    <div id="countdown-ribbon" aria-live="polite" data-launch=""></div>
     <footer>
         <div class="footer-newsletter">
             <div class="footer-newsletter-inner">
@@ -215,8 +296,20 @@
             <p>&copy; 2026 BizGrowth Africa • info@bizgrowth.africa</p>
         </div>
     </footer>
-    
-    <!-- Add animation optimization script -->
+    <!-- Sample modal -->
+    <div class="sample-overlay" id="sample-overlay" hidden>
+        <div class="sample-modal">
+            <button class="sample-close" id="sample-close" aria-label="Close"></button>
+            <h3 class="sample-title">Send me a sample</h3>
+            <p class="sample-sub">We’ll email today’s unlocked headline.</p>
+            <form class="sample-form" id="sample-form">
+                <input type="text" placeholder="Your name" required>
+                <input type="email" placeholder="Email address" required>
+                <button type="submit" class="footer-newsletter-button">Send sample</button>
+            </form>
+            <div class="sample-success" id="sample-success" hidden>Sample sent. Check your inbox.</div>
+        </div>
+    </div>
 </body>
 
 </html>

@@ -83,6 +83,13 @@ document.addEventListener('DOMContentLoaded', () => {
     animateOnScroll();
     setupLogoSwitcher();
     initHeroLiveBackground();
+    setupDeliveryChip();
+    setupSignals();
+    setupEditionUnlocks();
+    setupBriefingFilters();
+    setupReferralCard();
+    setupCountdownRibbon();
+    setupSampleModal();
 });
 
 // Podcast notification popup functionality
@@ -118,9 +125,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Only auto-show if explicitly enabled with data-autoshow
     if (guidePopup && guidePopup.hasAttribute('data-autoshow')) {
-        setTimeout(() => {
-            guidePopup.classList.add('active');
-        }, 1000);
+    setTimeout(() => {
+        guidePopup.classList.add('active');
+    }, 1000);
     }
 
     // Close popup when clicking the close button
@@ -189,10 +196,10 @@ const setupForm = () => {
     if (form) {
         // If using Netlify Forms, let the browser perform a normal POST
         if (!form.hasAttribute('data-netlify')) {
-            form.addEventListener('submit', (e) => {
-                e.preventDefault();
-                console.log('Form submitted');
-            });
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            console.log('Form submitted');
+        });
         }
     }
 };
@@ -240,8 +247,8 @@ function initHeroLiveBackground() {
         height = Math.max(1, Math.floor(rect.height));
         canvas.width = Math.floor(width * dpr);
         canvas.height = Math.floor(height * dpr);
-        canvas.style.width = width + 'px';
-        canvas.style.height = height + 'px';
+            canvas.style.width = width + 'px';
+            canvas.style.height = height + 'px';
         ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
         buildScene();
     }
@@ -352,7 +359,7 @@ function initHeroLiveBackground() {
         for (const e of edges) {
             const a = nodes[e.a], b = nodes[e.b];
             const dx = a.x - b.x, dy = a.y - b.y;
-            const dist = Math.hypot(dx, dy);
+                    const dist = Math.hypot(dx, dy);
             const alpha = Math.max(0, 0.14 - (dist / 600) * 0.14);
             if (alpha <= 0.01) continue;
             ctx.strokeStyle = `rgba(255,255,255,${alpha})`;
@@ -392,7 +399,7 @@ function initHeroLiveBackground() {
         step(dt);
         drawNetwork();
         rafId = requestAnimationFrame(frame);
-    }
+                    }
 
     function start() {
         cancelAnimationFrame(rafId);
@@ -413,6 +420,176 @@ function initHeroLiveBackground() {
     });
 }
 
+// Hero delivery chip
+function setupDeliveryChip() {
+    const chip = document.getElementById('hero-delivery-chip');
+    if (!chip) return;
+    try {
+        const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
+        chip.textContent = `Delivered daily at 7:00am • ${tz || 'Local time'}`;
+    } catch {
+        chip.textContent = 'Delivered daily at 7:00am • Local time';
+    }
+}
+
+// Signals (rotating one-liners)
+function setupSignals() {
+    const line = document.getElementById('signals-line');
+    if (!line) return;
+    const items = [
+        'New AMI tender in Kenya closes in 9 days.',
+        'Tourism grant window reopened in Rwanda.',
+        'ICT modernization RFP published in Ghana.',
+        'SME payments pilot expands in Nigeria.',
+        'AfDB corridor O&M partners: EOI open now.'
+    ];
+    let idx = 0;
+    const render = () => {
+        line.textContent = items[idx];
+        idx = (idx + 1) % items.length;
+    };
+    render();
+    setInterval(render, 4000);
+}
+
+// Today’s Briefing: inline unlock
+function setupEditionUnlocks() {
+    document.querySelectorAll('.unlock-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const uid = btn.getAttribute('data-uid');
+            const panel = document.querySelector(`.unlock-inline[data-for="${uid}"]`);
+            if (panel) panel.hidden = !panel.hidden;
+        });
+    });
+    document.querySelectorAll('.unlock-inline .unlock-confirm').forEach(confirmBtn => {
+        confirmBtn.addEventListener('click', (e) => {
+            const panel = e.target.closest('.unlock-inline');
+            if (!panel) return;
+            const emailInput = panel.querySelector('.unlock-email');
+            if (!emailInput || !emailInput.value) return;
+            // prefill waitlist email if empty
+            const wlEmail = document.querySelector('#waitlist-form input[type="email"]');
+            if (wlEmail && !wlEmail.value) wlEmail.value = emailInput.value;
+            const item = panel.closest('.edition-item');
+            if (item) item.classList.add('unlocked');
+            panel.hidden = true;
+        });
+    });
+}
+
+// Briefing filters
+function setupBriefingFilters() {
+    const bar = document.getElementById('briefing-filters');
+    if (!bar) return;
+    const items = Array.from(document.querySelectorAll('.edition-item'));
+    function apply(filter) {
+        items.forEach(li => {
+            li.style.display = '';
+            if (filter === 'all') return;
+            const [key, val] = filter.split(':');
+            const attr = key === 'sector' ? 'data-sector'
+                : key === 'country' ? 'data-country'
+                : key === 'size' ? 'data-size' : '';
+            if (!attr) return;
+            if ((li.getAttribute(attr) || '').toLowerCase() !== val.toLowerCase()) {
+                li.style.display = 'none';
+            }
+        });
+    }
+    bar.querySelectorAll('.brief-chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+            bar.querySelectorAll('.brief-chip').forEach(x => x.classList.remove('is-active'));
+            chip.classList.add('is-active');
+            apply(chip.getAttribute('data-filter') || 'all');
+        });
+    });
+}
+
+// Referral boost card
+function setupReferralCard() {
+    const btn = document.getElementById('referral-copy-btn');
+    const toast = document.getElementById('referral-toast');
+    if (!btn || !toast) return;
+    btn.addEventListener('click', async () => {
+        const u = new URL(window.location.href);
+        u.hash = 'join';
+        u.searchParams.set('ref', 'you');
+        try {
+            await navigator.clipboard.writeText(u.toString());
+            toast.hidden = false;
+            toast.textContent = 'Link copied';
+            setTimeout(() => { toast.hidden = true; }, 2000);
+        } catch {
+            toast.hidden = false;
+            toast.textContent = u.toString();
+            setTimeout(() => { toast.hidden = true; }, 4000);
+        }
+    });
+}
+
+// Countdown ribbon (defaults to 30 days from first visit)
+function setupCountdownRibbon() {
+    const el = document.getElementById('countdown-ribbon');
+    if (!el) return;
+    const key = 'bga_launch_ts';
+    let ts = parseInt(localStorage.getItem(key) || '', 10);
+    if (!ts || Number.isNaN(ts)) {
+        const d = new Date();
+        d.setDate(d.getDate() + 30);
+        ts = d.getTime();
+        try { localStorage.setItem(key, String(ts)); } catch {}
+    }
+    function tick() {
+        const now = Date.now();
+        const ms = Math.max(0, ts - now);
+        const days = Math.floor(ms / (24*60*60*1000));
+        const hours = Math.floor((ms % (24*60*60*1000)) / (60*60*1000));
+        const mins = Math.floor((ms % (60*60*1000)) / (60*1000));
+        el.textContent = `Launching in ${days}d ${hours}h ${mins}m • Join the waitlist`;
+        el.style.display = 'block';
+    }
+    tick();
+    setInterval(tick, 60000);
+}
+
+// Sample modal
+function setupSampleModal() {
+    const overlay = document.getElementById('sample-overlay');
+    const closeBtn = document.getElementById('sample-close');
+    const form = document.getElementById('sample-form');
+    const success = document.getElementById('sample-success');
+    if (!overlay || !closeBtn || !form || !success) return;
+    // open triggers: reuse unlock buttons as “open sample”
+    document.querySelectorAll('.unlock-btn').forEach(btn => {
+        btn.addEventListener('contextmenu', (e) => {
+            // alternate open via context click (hidden affordance to avoid cluttering UI)
+            e.preventDefault();
+            overlay.hidden = false;
+            overlay.classList.add('active');
+        });
+    });
+    closeBtn.addEventListener('click', () => {
+        overlay.classList.remove('active');
+        overlay.hidden = true;
+    });
+    overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) {
+            overlay.classList.remove('active');
+            overlay.hidden = true;
+        }
+    });
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        success.hidden = false;
+        setTimeout(() => {
+            overlay.classList.remove('active');
+            overlay.hidden = true;
+            success.hidden = true;
+        }, 1500);
+    });
+}
+
+// Sticky CTA removed
 // Logo switching shared setup
 function setupLogoSwitcher() {
     const logo = document.querySelector('.logo-img');

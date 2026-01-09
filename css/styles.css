@@ -612,6 +612,17 @@ html {
 .hero-kicker { font-size: 0.95rem; letter-spacing: 0.6px; text-transform: uppercase; opacity: 0.9; margin: 0 0 8px 0; }
 .hero-title { font-family: 'Playfair Display', serif; }
 .hero-subtitle { font-size: clamp(1rem, 2.2vw, 1.25rem); margin: 0 0 16px 0; opacity: 0.92; }
+.hero-meta {
+    display: inline-block;
+    margin: 0 0 12px 0;
+    padding: 6px 12px;
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,0.25);
+    color: rgba(255,255,255,0.95);
+    background: rgba(255,255,255,0.06);
+    font-size: 0.85rem;
+    letter-spacing: 0.4px;
+}
 
 .hero-eyebrow {
     display: inline-block;
@@ -832,27 +843,37 @@ html {
     #value-prop { padding: 64px 0; }
 }
 
-/* Coverage Section (definition list) */
-#coverage { padding: 80px 0; background: #000; color: #fff; }
-.coverage-wrap { max-width: 1000px; margin: 0 auto; padding: 0 20px; }
-#coverage h2 { text-align: center; margin-bottom: 24px; font-family: 'Playfair Display', serif; letter-spacing: 0.4px; }
-.coverage-list { margin: 0; padding: 0; }
-.coverage-row { display: flex; gap: 24px; align-items: flex-start; padding: 22px 0 26px; border-top: 1px solid rgba(255,255,255,0.14); }
-.coverage-row:last-child { border-bottom: 1px solid rgba(255,255,255,0.14); }
-.coverage-row dt {
-    min-width: 150px;
-    margin: 0;
-    font-weight: 800;
-    letter-spacing: 1.1px;
-    text-transform: uppercase;
-    color: rgba(255,255,255,0.95);
-}
-.coverage-row dd { margin: 0; flex: 1; color: rgba(255,255,255,0.85); line-height: 1.8; }
-@media (max-width: 768px) {
-    #coverage { padding: 60px 0; }
-    .coverage-row { display: block; }
-    .coverage-row dt { min-width: 0; margin-bottom: 6px; }
-}
+/* Signals strip removed */
+
+/* Today’s Briefing */
+#edition-preview { padding: 70px 0; background: #fff; }
+.edition-wrap { max-width: 1000px; margin: 0 auto; padding: 0 20px; }
+.section-kicker { text-align: center; margin: 0 0 18px 0; font-family: 'Playfair Display', serif; letter-spacing: 0.4px; color: #000; }
+.edition-header { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 10px; }
+.briefing-filters { display: flex; gap: 8px; flex-wrap: wrap; }
+.brief-chip { padding: 6px 12px; border-radius: 999px; border: 1px solid #ddd; background: #f8f9fa; color: #000; font-size: 0.85rem; cursor: pointer; }
+.brief-chip.is-active { background: #000; color: #fff; border-color: #000; }
+.edition-list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr; gap: 16px; }
+.edition-item { position: relative; padding: 18px 16px; border: 1px solid #eee; border-radius: 12px; background: #fff; overflow: hidden; }
+.edition-item .headline { margin: 0 0 6px 0; font-size: 1.1rem; letter-spacing: -0.2px; }
+.edition-item .deck { margin: 0 0 10px 0; color: #444; }
+.unlock-btn { padding: 8px 12px; border-radius: 999px; border: 1px solid #000; background: #000; color: #fff; font-size: 0.85rem; cursor: pointer; }
+.unlock-inline { margin-top: 10px; display: flex; gap: 8px; }
+.unlock-inline input { flex: 1; padding: 8px 12px; border: 1px solid #ddd; border-radius: 999px; }
+.unlock-inline .unlock-confirm { padding: 8px 12px; border-radius: 999px; border: 1px solid #000; background: #000; color: #fff; cursor: pointer; }
+.lock-mask { position: absolute; inset: 0; backdrop-filter: blur(2px); background: linear-gradient(180deg, rgba(255,255,255,0.35), rgba(255,255,255,0.6)); pointer-events: none; }
+.edition-item.unlocked .lock-mask { display: none; }
+
+/* What we cover */
+#coverage-compact { padding: 60px 0; background: #fff; }
+.coverage-compact-wrap { max-width: 800px; margin: 0 auto; padding: 0 20px; text-align: center; }
+.coverage-bullets { display: inline-grid; grid-template-columns: repeat(3, auto); gap: 10px 18px; padding: 0; margin: 0; list-style: none; }
+.coverage-bullets li { padding: 8px 12px; border: 1px solid #eee; border-radius: 999px; background: #f8f9fa; font-weight: 500; }
+@media (max-width: 600px) { .coverage-bullets { grid-template-columns: repeat(2, auto); } }
+
+/* First 7 Days removed */
+
+/* Sources removed */
 
 /* Waitlist Section */
 #waitlist {
@@ -936,6 +957,13 @@ html {
     color: #000;
     border-color: #000;
 }
+
+/* Referral card */
+.referral-card { margin-top: 16px; padding: 16px; border: 1px dashed rgba(0,0,0,0.2); border-radius: 12px; background: #fff; }
+.referral-title { font-weight: 800; letter-spacing: 0.6px; margin: 0 0 6px 0; }
+.referral-copy { margin: 0 0 10px 0; color: #444; }
+.referral-copy-btn { padding: 8px 12px; border-radius: 999px; border: 1px solid #000; background: #000; color: #fff; cursor: pointer; }
+.referral-toast { margin-top: 8px; font-size: 0.9rem; color: #0a7a2f; }
 
 @media (max-width: 768px) {
     #waitlist {
@@ -3483,3 +3511,38 @@ header nav ul {
     height: 100%;
     display: block;
 }
+
+/* Countdown ribbon */
+#countdown-ribbon {
+    position: fixed;
+    top: 60px;
+    left: 0;
+    right: 0;
+    z-index: 999;
+    background: #111;
+    color: #fff;
+    text-align: center;
+    font-size: 0.9rem;
+    padding: 6px 10px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    display: none;
+}
+
+/* Sample modal */
+.sample-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 1000; }
+.sample-overlay.active { display: flex; }
+.sample-modal { background: #fff; border-radius: 16px; padding: 20px; width: min(420px, 92vw); border: 1px solid #000; position: relative; }
+.sample-title { margin: 0 0 6px 0; }
+.sample-sub { margin: 0 0 12px 0; color: #444; }
+.sample-form { display: grid; gap: 10px; }
+.sample-form input { padding: 10px 12px; border-radius: 999px; border: 1px solid #ddd; }
+.sample-close { position: absolute; top: 10px; right: 10px; width: 28px; height: 28px; border: none; background: transparent; cursor: pointer; }
+.sample-close::before, .sample-close::after { content: ''; position: absolute; top: 13px; left: 6px; width: 16px; height: 2px; background: #000; }
+.sample-close::before { transform: rotate(45deg); }
+.sample-close::after { transform: rotate(-45deg); }
+.sample-success { margin-top: 10px; color: #0a7a2f; }
+
+/* Sticky CTA removed */
+
+/* Tighten gap between hero and value-prop */
+#hero + #value-prop { padding-top: 48px; }
